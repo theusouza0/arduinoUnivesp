@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="ISO-8859-1">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" type="text/css" href="styles/styles.css" media="screen" />
+
+    <script defer src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@7.0.5/dist/browser/signalr.min.js"></script>
+    <script defer src="script/script.js"></script>
+
+</head>
+<body>
+    <div clas="container">
+        <header class="header">
+            <nav class="navbar">
+                <div class="navbar-logo">
+                    <img src="./images/univesp-logo.png">
+                </div>
+                <div class="navbar-time">
+                </div>
+            </nav>
+        </header>
+        <button class="outside-sidebar-button" id="outside-sidebar-button">
+            <img src="./images/hamburguer-icon.png">
+        </button>
+        <div class="sidebar sidebar-closed" id="sidebar">
+           <div class="sidebar-content">
+                <button class="inside-sidebar-button" id="inside-sidebar-button">
+                    <img src="./images/hamburguer-icon.png">
+                </button>
+                <div class="sidebar-time">
+                    <p id="sidebar-time"></p>
+                </div>
+                <div class="sidebar-divider"></div>
+                <div class="sidebar-version">
+                    <p id="sidebar-version"></p>
+                </div>
+                <div class="sidebar-company">
+                    <p id="sidebar-company"></p>
+                </div>
+           </div>
+        </div>
+        <section class="content">
+            <section class="content-header">
+                <div class="content-title">
+                    <p>Monitoramento de Temperatura</p>
+                </div>
+            </section>
+            <div class="content-divider"></div>
+            <div class="content-table">
+                <table id="content-table">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Estado Geral</th>
+                            <th> 
+                                <div class="content-table-temperature">
+                                    <div class="content-table-temperature-title">
+                                        <p>Temperatura</p>
+                                    </div>
+                                    <div class="content-table-temperature-variations">
+                                        <p class="content-table-temperature-variations-left">Farenhit</p>
+                                        <p class="content-table-temperature-variations-right">Celsius</p>
+                                    </div>
+                                </div>
+                            </th>
+                            <th>Umidade</th>
+                        </tr>
+                    </thead>
+                    <tbody class="content-table-body"> 
+                    </tbody>
+                </table>
+            </div>
+ 
+        </section>
+        <footer class="content-logo">
+            <img src="./images/univesp-logo.png">
+        </footer>
+        
+    </div>
+    
+
+
+<!-- <div class="panel-container">
+
+        <div class="panel-border">
+            <div class="panel-content">
+
+                <div class="panel-header">
+                    <section class="panel-title">
+                        Temperature Monitoring Board
+                    </section>
+                    <div class="panel-divider">
+                    </div>
+                    <div class="panel-context">
+                        <div class="panel-software-version">
+                            <p id="software-version">aaa</p>
+                        </div>
+                        <div class="panel-software-logo">
+                            <img src="./images/image.png">
+                        </div>
+                        <div class="panel-software-time">
+                            <p id="software-time">aaa</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-data" id="data">
+
+                </div>
+
+              
+            </div>
+        </div>
+
+    </div>
+-->
+
+
+    
+</body>
+</html>
