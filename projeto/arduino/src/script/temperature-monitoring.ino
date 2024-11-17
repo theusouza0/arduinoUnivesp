@@ -1,145 +1,76 @@
-#include <WiFi.h>
-//ArduinoWebsockets library http://bit.ly/3LeAGVl
-#include <ArduinoWebsockets.h>
-// JSON (de)serialisation library http://bit.ly/3ZHI5Rs
-#include <ArduinoJson.h>
+/*
+* Projeto Integrador Univesp 
+*
+* EDUARDO LUIZ ANDRETTA
+* JOAO VICTOR DE SANTANA SILVA
+* JULIANO DOS SANTOS
+* LUCAS CAMPOS DE SOUZA 
+* MATHEUS CAMPOS DE SOUZA
+*
+*/
+ 
+//Bibliotecas LiquidCrystal (LCD)
+#include <LiquidCrystal.h>
 
-#define STATIC_IP true
-#define DEBUG true
-
-#define ONBOARD_BUTTON 0
-// Wi-Fi credentials for the network the ESP will connect to
-const char* ssid = "MIFI_D094";
-const char* password = "1234567890";
-
-// Websocket URL
-const char* websockets_server_host = "192.168.0.103";  //Enter server adress
-const uint16_t websockets_server_port = 1880;          // Enter server port
-
-#ifdef STATIC_IP
-// Configure your statis IP details.
-IPAddress local_IP(192, 168, 0, 115);
-IPAddress gateway(192, 168, 0, 1);
-IPAddress subnet(255, 255, 0, 0);
-IPAddress primaryDNS(1, 1, 1, 1);    //optional
-IPAddress secondaryDNS(8, 8, 8, 8);  //optional
-#endif
-
-using namespace websockets;
-
-WebsocketsClient client;
-
-// JSON Desrializer
-DynamicJsonDocument doc(1024);
-
-char response[200];
-bool connectionStatus = false;
-void setup() {
-  pinMode(ONBOARD_BUTTON, INPUT);
-  pinMode(LED_BUILTIN, OUTPUT);
-  // Initialize the serial port.
-  Serial.begin(115200);
-#ifdef STATIC_IP
-  if (!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS)) {
-    Serial.println("STA Failed to configure");
-  }
-#endif
-
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
-
-  WiFi.begin(ssid, password);
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print("-");
-  }
-#ifdef DEBUG
-  Serial.println("WiFi connected!");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
-#endif
-  //   Cnnect to WS
-
-  bool connected = client.connect(websockets_server_host, websockets_server_port, "/test/esp32");
-  if (connected) {
-    Serial.println("WS Connected!");
-    connectionStatus = true;
-  } else {
-    Serial.println("WS Connection failed    !");
-  }
-  // Callbacks for message and events
-  client.onMessage(messageCallback);
-  client.onEvent(eventCallback);
-
-  // Ping to the remote WS server. Expect a pong
-  client.ping();
+//Definir pinos
+#define SensorTemp		A1
+#define SensorUmi		A0
+#define Valvula			10
+  
+//Define os pinos que serão utilizados para ligação ao display
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+ 
+void setup()
+{
+  //Define o número de colunas e linhas do LCD
+  lcd.begin(16, 2);
 }
-
-void loop() {
-
-  if (client.available()) {
-    client.poll();
-  }
-  if (!digitalRead(ONBOARD_BUTTON)) {
-    delay(300);
-#ifdef DEBUG
-    Serial.println("Pressed Button");
-#endif
-    sprintf(response, "{\"temperature\": %f, \"Humidity\": %f}", 0.5, 0.6);
-    client.send(response);
-  }
-
-  if (!connectionStatus) {
-    Serial.println("No Connection");
-    bool reconnectStatus = client.connect(websockets_server_host, websockets_server_port, "/test/esp32");
-    if (reconnectStatus) {
-      Serial.println("WS Reconnected!");
-      connectionStatus = true;
-    } else {
-      // 1 Min Wait
-      delay(60000);
-    }
-  }
-}
-
-void messageCallback(WebsocketsMessage message) {
-#ifdef DEBUG
-  Serial.print("Message Received: ");
-  Serial.println(message.data());
-#endif
-  deserializeJson(doc, message.data());
-  if (doc["status"] == 1) {
-    digitalWrite(LED_BUILTIN, HIGH);
-  } else {
-    digitalWrite(LED_BUILTIN, LOW);
-  }
-}
-
-void eventCallback(WebsocketsEvent event, String data) {
-  switch (event)
-  {
-    case WebsocketsEvent::ConnectionOpened:
-      Serial.println("Connnection Opened");
-
-      break;
-
-    case WebsocketsEvent::ConnectionClosed:
-      Serial.println("Connnection Opened");
-
-      break;
-
-      case WebsocketsEvent::GotPing:
-        Serial.println("Pinged");
-
-        break;
-
-      case WebsocketsEvent::GotPong:
-        Serial.println("Ponged");
-
-        break;
-      default:
-        Serial.println("Without Defination");
+ 
+void loop()
+{
+  int temperatura = 28 ;
+  int umidade = 30 ;
+  
+  //lendo sensores
+  temperatura = analogRead(SensorTemp); //Valor Raw
+  umidade = analogRead(SensorUmi);//Valor Raw
+  
+  //temp ( 0 , 358)
+  //umi (0 , 876)
+  temperatura= map(temperatura,0,358,0,70);//escala
+  umidade= map(umidade,0,876,0,100);
+ 
+  //Limpa a tela
+  lcd.clear();
+  //Posiciona o cursor na coluna 0, linha 0;
+  lcd.setCursor(0, 0);
+  //Envia o texto entre aspas para o LCD
+  lcd.print("Temper=");
+  lcd.setCursor(8, 0);
+  lcd.print(temperatura);
+  lcd.setCursor(0, 1);
+  lcd.print("Umidade=");
+  lcd.setCursor(8, 1);
+  lcd.print(umidade);
+  delay(1000);
+  
+  if (temperatura > 35) {
+    digitalWrite(Valvula, HIGH);
+    lcd.setCursor(11,0);
+    lcd.print("Agua");
+    delay(3000);
+    digitalWrite(Valvula,LOW);
+    lcd.setCursor(11,0);
+    lcd.print(" ");
   }
   
+  if (umidade < 30) {
+    digitalWrite(Valvula, HIGH);
+    lcd.setCursor(11,0);
+    lcd.print("Agua");
+    delay(3000);
+    digitalWrite(Valvula,LOW);
+    lcd.setCursor(11,0);
+    lcd.print(" ");
+  }
 }
