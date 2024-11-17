@@ -33,13 +33,9 @@ Este projeto utiliza o **Arduino** para monitorar a temperatura e umidade em um 
 
 ![Projeto Integrador Univesp](https://github.com/user-attachments/assets/e66c3e8c-55e0-4c91-9db7-7b14d0e1a25c)
 
-/*
-* Projeto Integrador Univesp 
-*
-* EDUARDO LUIZ ANDRETTA
-* JOAO VICTOR DE SANTANA SILVA
-* JULIANO DOS SANTOS
-* LUCAS CAMPOS DE SOUZA 
-* MATHEUS CAMPOS DE SOUZA
-*
-*/
+##Integrantes:
+EDUARDO LUIZ ANDRETTA
+JOAO VICTOR DE SANTANA SILVA
+JULIANO DOS SANTOS
+LUCAS CAMPOS DE SOUZA
+MATHEUS CAMPOS DE SOUZA
